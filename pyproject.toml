@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mysqlite"
+version = "2025.07.28"
+description = "SQLite submodule"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+  { name="Pablo GP", email="pablogonzalezpila@gmail.com" }
+]
+dependencies = [
+  "sqlite3"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/PaulFilms/MySQLite"
+"Bug Tracker" = "https://github.com/PaulFilms/MySQLite/issues"
