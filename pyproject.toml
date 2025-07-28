@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mysqlite"
-version = "2025.07.28v2"
+version = "2025.07.28.dev2"
 description = "SQLite submodule"
 readme = "README.md"
 license = { file = "LICENSE" }
