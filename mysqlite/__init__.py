@@ -40,8 +40,8 @@ def get_create(enum_class: type[Enum], table_name: str = None) -> str:
             col_parts.append("NOT NULL")
         if field.unique:
             col_parts.append("UNIQUE")
-        if field.pk:
-            col_parts.append("PRIMARY KEY")
+        # if field.pk:
+        #     col_parts.append("PRIMARY KEY")
         if field.dflt_value is not None:
             col_parts.append(f"DEFAULT {repr(field.dflt_value)}")
 
@@ -108,17 +108,50 @@ for row in data:
 
 class SQL:
     def __init__(self, path_db: str):
-        pass
+        self.__path_db = path_db
 
-    def select(self):
-        return None
+    def select(self, sql: str) -> tuple[list, list]:
+        """
+        Ejecuta una consulta SELECT y retorna los resultados y los nombres de las columnas.
+
+        Parameters
+        ----------
+        sql : str
+            Consulta SQL a ejecutar (debe ser una sentencia SELECT).
+
+        Returns
+        -------
+        tuple[list, list]
+            Una tupla con dos elementos:
+            - lista de tuplas: cada tupla representa una fila de la consulta.
+            - lista de strings: nombres de las columnas devueltos por la consulta.
+        """
+        con = sqlite3.connect(self.__path_db)
+        cur = con.cursor()
+        data = cur.execute(sql).fetchall()
+        headers = [field[0] for field in cur.description]
+        con.close()
+        return data, headers
     
-    def __commit():
-        pass
+    def commit(self, sql: str, args=None):
+        con = sqlite3.connect(self.__path_db)
+        cur = con.cursor()
+        if args: cur.execute(sql, args)
+        else: cur.execute(sql)
+        con.commit()
+        con.close()
 
-    def insert(self):
-        pass
+    def insert(self, table: str, values: dict):
+        # values['firm'] = get_firm()
+        columns = ", ".join(values.keys())
+        values = tuple(values.values())
+        placeholders = ", ".join("?" for _ in values)
+        sql = f'''
+        INSERT INTO {table} ({columns}) VALUES ({placeholders});
+        '''
+        self.commit(sql, values)
 
+    # ⚠️ BUG
     def update(self):
         pass
 
