@@ -12,7 +12,7 @@ authors = [
   { name="Pablo GP", email="pablogonzalezpila@gmail.com" }
 ]
 dependencies = [
-  "sqlite3"
+  # "sqlite3"
 ]
 
 [project.urls]
