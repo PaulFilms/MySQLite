@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime
 from enum import Enum, auto
 from dataclasses import dataclass, fields
 
@@ -40,8 +41,8 @@ def get_create(enum_class: type[Enum], table_name: str = None) -> str:
             col_parts.append("NOT NULL")
         if field.unique:
             col_parts.append("UNIQUE")
-        # if field.pk:
-        #     col_parts.append("PRIMARY KEY")
+        if field.pk:
+            col_parts.append("PRIMARY KEY")
         if field.dflt_value is not None:
             col_parts.append(f"DEFAULT {repr(field.dflt_value)}")
 
@@ -49,6 +50,13 @@ def get_create(enum_class: type[Enum], table_name: str = None) -> str:
 
     sql = f"CREATE TABLE IF NOT EXISTS {table_name} (\n    " + ",\n    ".join(columns) + "\n);"
     return sql
+
+def get_firm(user: str, extra: str):
+    date_now = datetime.now().strftime("%Y-%m-%d / %H:%M")
+    firm = f"{user} [{date_now}] {extra}"
+    if extra:
+        firm = firm + " /" + extra
+    return firm
 
 @dataclass
 class PRAGMA:
@@ -107,7 +115,7 @@ for row in data:
 
 
 class SQL:
-    def __init__(self, path_db: str):
+    def __init__(self, path_db: str) -> None:
         self.__path_db = path_db
 
     def select(self, sql: str) -> tuple[list, list]:
@@ -142,7 +150,7 @@ class SQL:
         con.close()
 
     def insert(self, table: str, values: dict):
-        # values['firm'] = get_firm()
+        values['firm'] = get_firm()
         columns = ", ".join(values.keys())
         values = tuple(values.values())
         placeholders = ", ".join("?" for _ in values)
@@ -154,4 +162,5 @@ class SQL:
     # ⚠️ BUG
     def update(self):
         pass
+
 
