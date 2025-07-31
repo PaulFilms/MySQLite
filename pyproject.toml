@@ -4,12 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mysqlite"
-version = "2025.07.28.dev3"
+version = "2025.07.31"
 description = "SQLite submodule"
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [
-  { name="Pablo GP", email="pablogonzalezpila@gmail.com" }
+  {
+    name="Pablo GP", 
+    email="pablogonzalezpila@gmail.com" 
+  }
 ]
 dependencies = [
   # "sqlite3"
