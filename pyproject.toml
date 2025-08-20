@@ -3,20 +3,16 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mysqlite"
-version = "2025.07.31"
-description = "SQLite submodule"
+name = "MySQLite"
+version = "2025.08.20"
+description = "Simple wrapper for SQLite"
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [
-  {
-    name="Pablo GP", 
-    email="pablogonzalezpila@gmail.com" 
-  }
+  { name="Pablo GP", email="pablogonzalezpila@gmail.com" }
 ]
-dependencies = [
-  # "sqlite3"
-]
+requires-python = ">=3.8"
+dependencies = [] # "sqlite3"
 
 [tool.setuptools.packages.find]
 where = ["."]
