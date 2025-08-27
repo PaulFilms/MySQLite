@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, json
 from datetime import datetime
 from enum import Enum, auto
 from dataclasses import dataclass, fields
@@ -174,6 +174,68 @@ class SQL:
                 fetch=0,
                 commit=True
             )
+
+    def get_json(self, table: str, json_column: str, where_column: str, where_value: Any) -> Dict[str, Any]:
+        '''
+        Returns a python dict from defined record
+
+        Parameters
+        ----------
+        table : str
+            String table name
+        
+        json_column : str
+            Column name with json data
+        
+        where_column : str
+            Name of the 'where' filter column
+        
+        where_value :  str
+            Value of the 'where' filter
+        '''
+        if self.execute(sql=f'SELECT COUNT (*) FROM {table} WHERE {where_column}=?', values=[where_value], fetch=1)[0] != 1:
+            return None
+
+        json_data = self.execute(f'SELECT {json_column} FROM {table} WHERE {where_column}=?', values=[where_value], fetch=1)[0]
+        if not json_data:
+            return None
+        
+        return json.loads(json_data)
+    
+    def update_json(self, table: str, json_column: str, where_column: str, where_value: Any, update_values: Dict[str, Any]) -> bool:
+        '''
+        Updates a json data from defined record
+
+        Parameters
+        ----------
+        table : str
+            String table name
+        
+        json_column : str
+            Column name with json data
+        
+        where_column : str
+            Name of the 'where' filter column
+        
+        where_value :  str
+            Value of the 'where' filter
+        
+        update_values : dict[str, any]
+            New values to add or update
+        '''
+        if self.execute(sql=f'SELECT COUNT (*) FROM {table} WHERE {where_column}=?', values=[where_value], fetch=1)[0] != 1:
+            return False
+
+        json_dict = self.get_json(table=table, json_column=json_column, where_column=where_column, where_value=where_value)
+        
+        if isinstance(json_dict, dict):
+            for k, v in update_values.items():
+                json_dict[k] = v
+        elif not json_dict:
+            json_dict = update_values
+        
+        self.update(table=table, values={json_column: json.dumps(json_dict)}, where={where_column: where_value})
+        return True
 
 
 class SCHEMA:
