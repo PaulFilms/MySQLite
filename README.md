@@ -69,6 +69,7 @@ from mysqlite import datatypes
 ## Task
    - Translate all text to english
    - Wrtite DATATYPES examples
+   - Add Return bool in 'insert' and 'update' functions
    - Get more control with fetchall() / fetchmany(size)
       - fetchall() gets all recordset
       - fetchmany(size) gets size defined recordset

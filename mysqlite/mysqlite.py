@@ -2,6 +2,7 @@ import sqlite3, json
 from datetime import datetime
 from enum import Enum, auto
 from dataclasses import dataclass, fields
+from typing import Any, List, Tuple, Dict
 
 
 class datatypes(Enum):
