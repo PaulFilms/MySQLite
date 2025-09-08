@@ -229,11 +229,11 @@ class SQL:
 
         json_dict = self.get_json(table=table, json_column=json_column, where_column=where_column, where_value=where_value)
         
-        if isinstance(json_dict, dict):
+        if not json_dict:
+            json_dict = update_values
+        else:
             for k, v in update_values.items():
                 json_dict[k] = v
-        elif not json_dict:
-            json_dict = update_values
         
         self.update(table=table, values={json_column: json.dumps(json_dict)}, where={where_column: where_value})
         return True
