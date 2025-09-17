@@ -127,9 +127,6 @@ class SQL:
 
         Parameters
         ----------
-        sql : str
-            SQL string to execute
-        
         table : str
             String table name
         
