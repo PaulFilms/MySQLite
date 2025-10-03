@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "MySQLite"
-version = "2025.10.02"
+version = "2025.10.03"
 description = "Simple wrapper for SQLite"
 readme = "README.md"
 license = { file = "LICENSE" }
