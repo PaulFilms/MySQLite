@@ -156,8 +156,7 @@ class SQL:
             Dictionary with where filters {'id': 'the id value'}
         """
         values_str = ", ".join(f'"{col}"=?' for col in values.keys())
-        where_str = ' AND '.join(f"{k}=?" for k, v in where.items())
-        where_str = " AND ".join(f'"{col}"=?' for col in where.keys())
+        where_str = ' AND '.join(f'"{col}"=?' for col in where.keys())
         count = self.execute(
             sql=f"SELECT COUNT(*) FROM {table} WHERE {where_str}", 
             values=list(where.values()), 
