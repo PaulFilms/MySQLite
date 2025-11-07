@@ -60,21 +60,69 @@ class SQL:
     def __init__(self, path_db: str) -> None:
         self.__path_db = path_db
         self.curr: sqlite3.Cursor = None
+        self.__max_retries: int = 3
+        self.__retry_delay: float = 0.5
+
+    def __set_wal_mode(self, conn: sqlite3.Connection):
+        """Activa el modo WAL solo una vez por conexión."""
+        try:
+            conn.execute("PRAGMA journal_mode=WAL;")
+        except sqlite3.DatabaseError:
+            pass  # ignora si ya está configurado
 
     @staticmethod
     def __connection(func):
         def wrapper(self, *args, **kwargs):
-            conn = sqlite3.connect(self.__path_db)
+            conn = sqlite3.connect(
+                self.__path_db,
+                timeout=5, 
+                check_same_thread=False
+            )
+            self.__set_wal_mode(conn)
             self.curr = conn.cursor()
             commit = kwargs.get('commit', False)
             try: 
                 result = func(self, *args, **kwargs)
-                if commit: conn.commit()
+                if commit: 
+                    conn.commit()
                 return result
             finally:
                 conn.close()
         return wrapper
-    
+
+    # @staticmethod
+    # def __with_retry(func):
+    #     """Decorador interno para manejar conexión + reintentos automáticos."""
+    #     @wraps(func)
+    #     def wrapper(self, *args, **kwargs):
+    #         retries = self.__max_retries
+    #         last_error = None
+    #         for attempt in range(retries):
+    #             try:
+    #                 # check_same_thread=False → permite uso desde diferentes threads
+    #                 conn = sqlite3.connect(self.__path_db, timeout=5, check_same_thread=False)
+    #                 self.__set_wal_mode(conn)
+    #                 self.curr = conn.cursor()
+    #                 commit = kwargs.get('commit', False)
+    #                 try:
+    #                     result = func(self, *args, **kwargs)
+    #                     if commit:
+    #                         conn.commit()
+    #                     return result
+    #                 finally:
+    #                     conn.close()
+    #             except sqlite3.OperationalError as e:
+    #                 if "locked" in str(e).lower():
+    #                     last_error = e
+    #                     if attempt < retries - 1:
+    #                         time.sleep(self.__retry_delay * (attempt + 1))  # backoff progresivo
+    #                         continue
+    #                 raise
+    #         # si después de los reintentos sigue fallando, relanzamos
+    #         raise last_error or sqlite3.OperationalError("Database operation failed.")
+    #     return wrapper
+
+
     @__connection
     def execute(self, sql: str, values: list[any] | tuple[any] = None, fetch: int = 2, commit: bool = False):
         '''
@@ -112,8 +160,8 @@ class SQL:
             case 3: return result.fetchmany()
             case 4: return [field[0] for field in result.description]
     
-    @__connection(commit=True)
-    def script(self, sql_script: str):
+    @__connection
+    def script(self, sql_script: str, commit: bool = True):
         self.curr.executescript(sql_script)
 
     def select(self, sql: str) -> list[any]:
