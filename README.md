@@ -1,7 +1,7 @@
 # MySQLite
-Python SQLite3 SubModule with basic functions
+Python SQLite3 wrapper with basic functions
 
-![Last commit](https://img.shields.io/github/last-commit/PaulFilms/MySQLite?label=Último%20commit)
+![Last commit](https://img.shields.io/github/last-commit/PaulFilms/MySQLite?label=Last%20commit)
 
 
 ## Installation Method
@@ -29,7 +29,7 @@ path_db = r'path_to_you_sqlite_db.db'
 DB = mysqlite.SQL(path_db)
 
 sql = '''SELECT * FROM your_table'''
-data = DB.execute(sql)
+data = DB.select(sql)
 ```
 
 INSERT

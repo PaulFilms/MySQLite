@@ -11,6 +11,7 @@ class datatypes(Enum):
 
     Typenames
     ---------
+
     INTEGER :
         INT / INTEGER / TINYINT / SMALLINT / MEDIUMINT / BIGINT / UNSIGNED BIG INT / INT2 / INT8
     TEXT :
@@ -24,6 +25,7 @@ class datatypes(Enum):
 
     Functions
     ---------
+
     - get_datetime_from_float
     - get_float_from_datetime
     '''
@@ -50,6 +52,7 @@ class SQL:
     Functions
     ---------
     - execute
+    - script
     - select
     - insert
     - update
@@ -109,6 +112,10 @@ class SQL:
             case 3: return result.fetchmany()
             case 4: return [field[0] for field in result.description]
     
+    @__connection(commit=True)
+    def script(self, sql_script: str):
+        self.curr.executescript(sql_script)
+
     def select(self, sql: str) -> list[any]:
         """
         SELECT string function
@@ -303,7 +310,6 @@ class SCHEMA:
                 data_dict[field_obj.name] = field_obj
             
             return data_dict
-
 
     def get_sql_create(enum_class: type[Enum], table_name: str = None) -> str:
         """
