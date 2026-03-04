@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "MySQLite"
-version = "2025.11.06"
+dynamic = ["version"]
 description = "Simple wrapper for SQLite"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -16,6 +16,9 @@ dependencies = [] # "sqlite3"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[tool.setuptools.dynamic]
+version = { attr = "mysqlite._version.__version__" }
 
 [project.urls]
 "Homepage" = "https://github.com/PaulFilms/MySQLite"

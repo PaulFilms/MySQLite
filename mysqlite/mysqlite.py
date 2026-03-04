@@ -3,6 +3,7 @@ from datetime import datetime
 from enum import Enum, auto
 from dataclasses import dataclass, fields
 from typing import Any, List, Tuple, Dict
+import warnings
 
 
 class datatypes(Enum):
@@ -159,7 +160,44 @@ class SQL:
             case 2: return result.fetchall()
             case 3: return result.fetchmany()
             case 4: return [field[0] for field in result.description]
-    
+
+    @__connection
+    def executemany(self, sql: str, values: list[any] | tuple[any] = None, commit=True):
+        '''⚠️ INCOMPLETE
+        Extended sql executemany function
+
+        Parameters
+        ----------
+        sql : str
+            SQL string to execute
+        
+        values :  list[any] or tuple[any]
+            Optional iterable object to use in case that sql string use '?' placeholders
+        
+        ⚠️ Fetch : int
+            Integer value with diferent kind of fetch (1.Fecthone, 2.Fecthall, 3.Fecthmany, 4.Description)
+
+        commit : bool
+            Boolean value to commit changes in the database
+
+        ⚠️ Returns
+        -------
+        Fetch :
+            - 1. Fecthone -> tuple[any]
+            - 2. Fecthall -> list[tuple]
+            - 3. Fecthmany -> list[tuple][:size] ⚠️ INCOMPLETE
+            - 4. Description -> tuple[str]
+        '''
+        warnings.warn(
+            "`executemany` is incomplete, please stay tuned for future updates. ",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        if values:
+            result = self.curr.executemany(sql, values)
+        else:
+            result = self.curr.executemany(sql)
+
     @__connection
     def script(self, sql_script: str, commit: bool = True):
         self.curr.executescript(sql_script)
